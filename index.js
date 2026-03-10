@@ -66,6 +66,21 @@ app.get("/voir-tout", async (req, res) => {
     }
 });
 
+// Voir les données
+app.get("/voir-tout", async (req, res) => {
+    try {
+        const tousLesMessages = await Message.find();
+        let html = "<h1>Messages</h1><ul>";
+        tousLesMessages.forEach(msg => {
+            html += `<li><strong>${msg.nom}</strong> : ${msg.texte || "Pas de texte"}</li>`;
+        });
+        html += "</ul><a href='/'>Retour</a>";
+        res.send(html);
+    } catch (error) {
+        res.status(500).send("Erreur de lecture.");
+    }
+});
+
 // 3. Route 404 (doit rester en dernier)
 app.get("/*any", (req, res) => {
     res.status(404).sendFile(path.join(__dirname, "html", "fr", "404.html"));
