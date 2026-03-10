@@ -1,45 +1,3 @@
-/*const express = require("express");
-const path = require("path");
-//const fs = require("fs");
-const app = express();
-
-const lang ="fr"; //process.env.Lang.slice(0 , 2);
-app.use("/CSS", express.static(path.join(__dirname, "/CSS")));
-
-app.get("/", (req, res) => {
-
-    const folder = (lang === fr) ? "fr" : "en";
-    res.sendFile(path.join(__dirname, "html", folder, "index.html"));
-   /* let indexHTML;
-
-    switch(lang){
-        case"fr" : 
-        indexHTML = fs.readFileSync(path.join(__dirname, "html", "fr", "index.html" , "utf-8"));
-        break;
-        case"en" :
-        indexHTML = fs.readFileSync(path.join(__dirname, "html", "en", "index.html" , "utf-8"));
-        break;
-        default:
-        indexHTML = fs.readFileSync(path.join(__dirname, "html", "fr", "index.html" , "utf-8"));
-        break;
-    }
-    res.send(indexHTML);
-})
-
-app.get("*", (req, res) =>{
-
-    res.status(404).sendFile(path.join(__dirname, "html", "fr", "404.html"));
-
-    /*const HTML = fs.readFileSync(path.join(__dirname, "html", "fr", "404.html", "utf-8"));
-    res.send(HTML);
-});
-
-
-app.listen(8080 , () => {
-    
-    console.log("le serveur est lancé : 8080");
-})*/
-
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -64,6 +22,26 @@ const messageSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model('Message', messageSchema);
+const Message = require("./models/Message"); // On importe le modèle créé précédemment
+
+app.post("/ajouter-donnee", async (req, res) => {
+    try {
+        // 1. On récupère les données du formulaire
+        const nouvelleDonnee = new Message({
+            nom: req.body.nom,
+            email: req.body.email
+        });
+
+        // 2. On enregistre dans MongoDB
+        await nouvelleDonnee.save();
+
+        // 3. On répond à l'utilisateur
+        res.send("Données bien reçues et enregistrées ! <a href='/'>Retour</a>");
+    } catch (error) {
+        res.status(500).send("Erreur lors de l'enregistrement.");
+    }
+});
+
 
 // 1. Fichiers statiques
 app.use("/CSS", express.static(path.join(__dirname, "CSS")));
@@ -93,22 +71,3 @@ app.listen(PORT, () => {
 // Permet de lire les données envoyées via un formulaire HTML (POST)
 app.use(express.urlencoded({ extended: true }));
 
-const Message = require("./models/Message"); // On importe le modèle créé précédemment
-
-app.post("/ajouter-donnee", async (req, res) => {
-    try {
-        // 1. On récupère les données du formulaire
-        const nouvelleDonnee = new Message({
-            nom: req.body.nom,
-            email: req.body.email
-        });
-
-        // 2. On enregistre dans MongoDB
-        await nouvelleDonnee.save();
-
-        // 3. On répond à l'utilisateur
-        res.send("Données bien reçues et enregistrées ! <a href='/'>Retour</a>");
-    } catch (error) {
-        res.status(500).send("Erreur lors de l'enregistrement.");
-    }
-});
