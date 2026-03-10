@@ -15,5 +15,34 @@
     </form>
 
     <textarea name="texte" placeholder="Ton message"></textarea>
+
+    <h2>Messages reçus :</h2>
+        <div id="liste-messages">
+            <p>Chargement des messages...</p>
+        </div>
+
+        <script>
+            // On appelle la route /voir-tout que tu as déjà créée
+            fetch('/voir-tout-json') 
+                .then(response => response.json())
+                .then(messages => {
+                    const div = document.getElementById('liste-messages');
+                    div.innerHTML = ''; // On vide le message de chargement
+        
+                    if (messages.length === 0) {
+                        div.innerHTML = '<p>Aucun message pour le moment.</p>';
+                        return;
+                    }
+        
+                    // On crée une liste pour chaque message
+                    messages.forEach(msg => {
+                        const p = document.createElement('p');
+                        p.style.borderBottom = "1px solid #ccc";
+                        p.innerHTML = `<strong>${msg.nom}</strong> : ${msg.texte || 'Pas de texte'}`;
+                        div.appendChild(p);
+                    });
+                })
+                .catch(err => console.error("Erreur d'affichage :", err));
+        </script>
 </body>
 </html>

@@ -81,6 +81,16 @@ app.get("/voir-tout", async (req, res) => {
     }
 });
 
+// Cette route renvoie uniquement les données (pas de HTML)
+app.get("/voir-tout-json", async (req, res) => {
+    try {
+        const messages = await Message.find();
+        res.json(messages); // On envoie le tableau de données pur
+    } catch (error) {
+        res.status(500).json({ error: "Erreur de lecture" });
+    }
+});
+
 // 3. Route 404 (doit rester en dernier)
 app.get("/*any", (req, res) => {
     res.status(404).sendFile(path.join(__dirname, "html", "fr", "404.html"));
