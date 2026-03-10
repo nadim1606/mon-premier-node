@@ -38,7 +38,7 @@
                     messages.forEach(msg => {
                         const p = document.createElement('p');
                         p.style.borderBottom = "1px solid #ccc";
-                        p.innerHTML = `<strong>${msg.nom}</strong> : ${msg.texte || 'Pas de texte'}`;
+                        p.innerHTML = `<strong>${msg.nom}</strong> : ${msg.email || 'Pas de texte'}`;
                         div.appendChild(p);
                     });
                 })

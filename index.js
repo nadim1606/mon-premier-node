@@ -67,7 +67,7 @@ app.get("/voir-tout", async (req, res) => {
 });
 
 // Voir les données
-app.get("/voir-tout", async (req, res) => {
+/*app.get("/voir-tout", async (req, res) => {
     try {
         const tousLesMessages = await Message.find();
         let html = "<h1>Messages</h1><ul>";
@@ -79,7 +79,7 @@ app.get("/voir-tout", async (req, res) => {
     } catch (error) {
         res.status(500).send("Erreur de lecture.");
     }
-});
+});*/
 
 // Cette route renvoie uniquement les données (pas de HTML)
 app.get("/voir-tout-json", async (req, res) => {
