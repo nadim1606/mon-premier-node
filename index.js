@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
   const Message = require("./models/Message"); // On importe le modèle créé précédemment
 
 const lang = "fr"; 
-
+// Permet de lire les données envoyées via un formulaire HTML (POST)
 app.post("/ajouter-donnee", async (req, res) => {
     try {
         // 1. On récupère les données du formulaire
@@ -48,6 +48,24 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "html", folder, "index.html"));
 });
 
+// Route pour voir tous les messages
+app.get("/voir-tout", async (req, res) => {
+    try {
+        const tousLesMessages = await Message.find(); // Récupère tout de MongoDB
+        
+        // On crée un petit affichage rapide
+        let html = "<h1>Liste des messages</h1><ul>";
+        tousLesMessages.forEach(msg => {
+            html += `<li><strong>${msg.nom}</strong> (${msg.email}) : ${msg.texte || "Pas de texte"}</li>`;
+        });
+        html += "</ul><a href='/'>Retour</a>";
+        
+        res.send(html);
+    } catch (error) {
+        res.status(500).send("Erreur lors de la lecture.");
+    }
+});
+
 // 3. Route 404 (doit rester en dernier)
 app.get("/*any", (req, res) => {
     res.status(404).sendFile(path.join(__dirname, "html", "fr", "404.html"));
@@ -61,6 +79,6 @@ app.listen(PORT, () => {
     console.log(`Serveur en ligne sur le port ${PORT}`);
 });
 
-// Permet de lire les données envoyées via un formulaire HTML (POST)
+
 
 
