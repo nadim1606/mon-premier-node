@@ -1,28 +1,24 @@
 const express = require("express");
 const path = require("path");
-const app = express();
+const mongoose = require('mongoose');
 
 require('dotenv').config(); // Charge le fichier .env
-const mongoose = require('mongoose');
+
+const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+// 1. Fichiers statiques
+app.use("/CSS", express.static(path.join(__dirname, "CSS")));
+
 
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Connecté à la base de données !"))
   .catch(err => console.error("Erreur de connexion :", err));
 
+  const Message = require("./models/Message"); // On importe le modèle créé précédemment
+
 const lang = "fr"; 
-
-//const mongoose = require('mongoose');
-
-const messageSchema = new mongoose.Schema({
-    nom: String,
-    email: String,
-    texte: String,
-    date: { type: Date, default: Date.now }
-});
-
-module.exports = mongoose.model('Message', messageSchema);
-const Message = require("./models/Message"); // On importe le modèle créé précédemment
 
 app.post("/ajouter-donnee", async (req, res) => {
     try {
@@ -43,8 +39,7 @@ app.post("/ajouter-donnee", async (req, res) => {
 });
 
 
-// 1. Fichiers statiques
-app.use("/CSS", express.static(path.join(__dirname, "CSS")));
+
 
 // 2. Route Accueil
 app.get("/", (req, res) => {
@@ -58,9 +53,7 @@ app.get("/*any", (req, res) => {
     res.status(404).sendFile(path.join(__dirname, "html", "fr", "404.html"));
 });
 
-/*app.listen(8080, () => {
-    console.log("Le serveur est lancé sur : http://localhost:8080");
-});*/
+
 
 const PORT = process.env.PORT || 8080; // Utilise le port du serveur OU 8080 par défaut
 
@@ -69,5 +62,5 @@ app.listen(PORT, () => {
 });
 
 // Permet de lire les données envoyées via un formulaire HTML (POST)
-app.use(express.urlencoded({ extended: true }));
+
 
